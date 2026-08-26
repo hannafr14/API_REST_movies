@@ -31,8 +31,15 @@ public class MovieEntity {
         joinColumns = @JoinColumn(name = "movie_id"),
         inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-
     private Set<GenreEntity> genres;
+
+    @ManyToMany
+    @JoinTable(
+        name = "movie_actor",
+        joinColumns = @JoinColumn(name = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "actor_id")
+    )
+    private Set<ActorEntity> actors;
 
     public MovieEntity() {
     }
@@ -71,5 +78,13 @@ public class MovieEntity {
 
     public void setGenres(Set<GenreEntity> genres) {
         this.genres = genres;
+    }
+
+    public Set<ActorEntity> getActors() {
+        return actors;
+    }
+
+    public void setActors(Set<ActorEntity> actors) {
+        this.actors = actors;
     }
 }
