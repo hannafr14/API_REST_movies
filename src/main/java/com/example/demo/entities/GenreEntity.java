@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 @Table(name = "genres")
 public class GenreEntity {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idGenre;
 
     private String genre;
@@ -18,7 +18,7 @@ public class GenreEntity {
     public GenreEntity() {
     }
 
-    public GenreEntity (String genre) {
+    public GenreEntity(String genre) {
         this.genre = genre;
     }
 
