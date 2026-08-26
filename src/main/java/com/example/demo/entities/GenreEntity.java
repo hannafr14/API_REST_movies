@@ -46,4 +46,12 @@ public class GenreEntity {
     public void setGenre(String genre) {
         this.genre = genre;
     }
+
+    public Set<MovieEntity> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(Set<MovieEntity> movies) {
+        this.movies = movies;
+    }
 }
