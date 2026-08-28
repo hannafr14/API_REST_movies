@@ -1,16 +1,19 @@
 package com.example.demo.services;
 
-import com.example.demo.entities.MovieEntity;
 import java.util.List;
 
+import com.example.demo.dtos.MovieDTORequest;
+import com.example.demo.dtos.MovieDTOResponse;
+
 public interface InterfaceMovieService {
-    List<MovieEntity> getAllMovies();
 
-    MovieEntity getMovieById(Long id);
+    List<MovieDTOResponse> getAllMovies();
 
-    MovieEntity createMovie(MovieEntity movie);
+    MovieDTOResponse getMovieById(Long id);
 
-    MovieEntity updateMovie(Long id, MovieEntity movie);
+    MovieDTOResponse createMovie(MovieDTORequest dto);
+
+    MovieDTOResponse updateMovie(Long id, MovieDTORequest dto);
 
     void deleteMovie(Long id);
 }

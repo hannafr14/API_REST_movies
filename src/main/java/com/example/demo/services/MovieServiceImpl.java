@@ -1,52 +1,72 @@
 package com.example.demo.services;
 
 import java.util.List;
+
+import com.example.demo.dtos.MovieDTORequest;
+import com.example.demo.dtos.MovieDTOResponse;
 import com.example.demo.entities.MovieEntity;
 import com.example.demo.repositories.MovieRepository;
 import org.springframework.stereotype.Service;
 import com.example.demo.exceptions.MovieNotFoundException;
+import com.example.demo.mappers.MovieMapper;
 
 @Service
 public class MovieServiceImpl implements InterfaceMovieService {
 
     private final MovieRepository movieRepository;
+    private final MovieMapper movieMapper;
 
-    public MovieServiceImpl(MovieRepository movieRepository) {
+    public MovieServiceImpl(MovieRepository movieRepository, MovieMapper movieMapper) {
         this.movieRepository = movieRepository;
+        this.movieMapper = movieMapper;
     }
 
     @Override
-    public List<MovieEntity> getAllMovies() {
-        return movieRepository.findAll();
+    public List<MovieDTOResponse> getAllMovies() {
+        return movieRepository.findAll()
+            .stream()
+            .map(movieMapper::toResponse)
+            .toList();
     }
 
     @Override
-    public MovieEntity getMovieById(Long id) {
-        return movieRepository.findById(id)
+    public MovieDTOResponse getMovieById(Long id) {
+
+        MovieEntity movie = movieRepository.findById(id)
             .orElseThrow(() -> new MovieNotFoundException(id));
+
+        return movieMapper.toResponse(movie);
     }
 
     @Override
-    public MovieEntity createMovie(MovieEntity movie) {
-        return movieRepository.save(movie);
+    public MovieDTOResponse createMovie(MovieDTORequest dto) {
+
+        MovieEntity movie = movieMapper.toEntity(dto);
+
+        MovieEntity savedMovie = movieRepository.save(movie);
+
+        return movieMapper.toResponse(savedMovie);
     }
 
     @Override
-    public MovieEntity updateMovie(Long id, MovieEntity movie) {
+    public MovieDTOResponse updateMovie(Long id, MovieDTORequest dto) {
 
-        MovieEntity existingMovie = getMovieById(id);
+        MovieEntity existingMovie = movieRepository.findById(id)
+            .orElseThrow(() -> new MovieNotFoundException(id));
 
-        existingMovie.setMovieName(movie.getMovieName());
-        existingMovie.setYear(movie.getYear());
-        existingMovie.setGenres(movie.getGenres());
-        existingMovie.setActors(movie.getActors());
+        existingMovie.setMovieName(dto.movieName());
 
-        return movieRepository.save(existingMovie);
+        MovieEntity updatedMovie = movieRepository.save(existingMovie);
+
+        return movieMapper.toResponse(updatedMovie);
     }
 
     @Override
     public void deleteMovie(Long id) {
-        MovieEntity movie = getMovieById(id);
+
+        MovieEntity movie = movieRepository.findById(id)
+            .orElseThrow(() -> new MovieNotFoundException(id));
+
         movieRepository.delete(movie);
     }
 }
