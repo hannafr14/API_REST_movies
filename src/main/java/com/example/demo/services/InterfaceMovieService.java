@@ -16,4 +16,6 @@ public interface InterfaceMovieService {
     MovieDTOResponse updateMovie(Long id, MovieDTORequest dto);
 
     void deleteMovie(Long id);
+
+    List<MovieDTOResponse> getMoviesByName(String movieName);
 }
