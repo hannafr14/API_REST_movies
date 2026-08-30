@@ -11,10 +11,13 @@ public record MovieDTORequest(
     @NotNull(message = "Movie name cannot be null")
     String movieName,
 
+    @NotNull(message = "Year cannot be null")
     Long yearId,
 
+    @NotNull(message = "Genres cannot be null")
     Set<Long> genreIds,
 
+    @NotNull(message = "Actors cannot be null")
     Set<Long> actorIds
 ) {
 

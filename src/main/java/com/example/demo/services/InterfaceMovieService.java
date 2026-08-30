@@ -18,4 +18,6 @@ public interface InterfaceMovieService {
     void deleteMovie(Long id);
 
     List<MovieDTOResponse> getMoviesByName(String movieName);
+
+    List<MovieDTOResponse> getMoviesByGenre(String genre);
 }

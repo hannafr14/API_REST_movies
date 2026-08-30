@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.List;
 
 import com.example.demo.dtos.MovieDTORequest;
@@ -18,7 +18,11 @@ import com.example.demo.repositories.MovieRepository;
 import com.example.demo.repositories.YearRepository;
 
 import org.springframework.stereotype.Service;
+
+import com.example.demo.exceptions.ActorNotFoundException;
+import com.example.demo.exceptions.GenreNotFoundException;
 import com.example.demo.exceptions.MovieNotFoundException;
+import com.example.demo.exceptions.YearNotFoundException;
 import com.example.demo.mappers.MovieMapper;
 
 @Service
@@ -67,15 +71,17 @@ public class MovieServiceImpl implements InterfaceMovieService {
         MovieEntity movie = movieMapper.toEntity(dto);
 
             YearEntity year = yearRepository.findById(dto.yearId())
-                .orElseThrow(() -> new RuntimeException("Year not found"));
+                .orElseThrow(() -> new YearNotFoundException(dto.yearId()));
 
-            Set<GenreEntity> genres = new HashSet<>(
-                genreRepository.findAllById(dto.genreIds())
-            );
+            Set<GenreEntity> genres = dto.genreIds().stream()
+            .map(id -> genreRepository.findById(id)
+                    .orElseThrow(() -> new GenreNotFoundException(id)))
+            .collect(Collectors.toSet());
 
-            Set<ActorEntity> actors = new HashSet<>(
-                actorRepository.findAllById(dto.actorIds())
-            );
+            Set<ActorEntity> actors = dto.actorIds().stream()
+            .map(actorId -> actorRepository.findById(actorId)
+                .orElseThrow(() -> new ActorNotFoundException(actorId)))
+            .collect(Collectors.toSet());
 
             movie.setYear(year);
             movie.setGenres(genres);
@@ -93,15 +99,17 @@ public class MovieServiceImpl implements InterfaceMovieService {
             .orElseThrow(() -> new MovieNotFoundException(id));
 
         YearEntity year = yearRepository.findById(dto.yearId())
-            .orElseThrow(() -> new RuntimeException("Year not found"));
+            .orElseThrow(() -> new YearNotFoundException(dto.yearId()));
 
-        Set<GenreEntity> genres = new HashSet<>(
-            genreRepository.findAllById(dto.genreIds())
-        );
+        Set<GenreEntity> genres = dto.genreIds().stream()
+            .map(genreId -> genreRepository.findById(id)
+                    .orElseThrow(() -> new GenreNotFoundException(id)))
+            .collect(Collectors.toSet());
 
-        Set<ActorEntity> actors = new HashSet<>(
-            actorRepository.findAllById(dto.actorIds())
-        );
+        Set<ActorEntity> actors = dto.actorIds().stream()
+            .map(actorId -> actorRepository.findById(actorId)
+                    .orElseThrow(() -> new ActorNotFoundException(actorId)))
+            .collect(Collectors.toSet());
 
         existingMovie.setMovieName(dto.movieName());
         existingMovie.setYear(year);
@@ -128,5 +136,13 @@ public class MovieServiceImpl implements InterfaceMovieService {
             .stream()
             .map(movieMapper::toResponse)
             .toList();
+    }
+
+    @Override
+    public List<MovieDTOResponse> getMoviesByGenre(String genre) {
+        return movieRepository.findByGenresGenreContainingIgnoreCase(genre)
+                .stream()
+                .map(movieMapper::toResponse)
+                .toList();
     }
 }

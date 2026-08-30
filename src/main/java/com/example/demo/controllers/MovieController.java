@@ -66,4 +66,11 @@ public class MovieController {
     public List<MovieDTOResponse> getMoviesByName(@PathVariable String movieName) {
         return movieService.getMoviesByName(movieName);
     }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<List<MovieDTOResponse>> getMoviesByGenre(
+            @PathVariable String genre) {
+
+        return ResponseEntity.ok(movieService.getMoviesByGenre(genre));
+    }
 }
