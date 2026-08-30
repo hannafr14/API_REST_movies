@@ -102,8 +102,8 @@ public class MovieServiceImpl implements InterfaceMovieService {
             .orElseThrow(() -> new YearNotFoundException(dto.yearId()));
 
         Set<GenreEntity> genres = dto.genreIds().stream()
-            .map(genreId -> genreRepository.findById(id)
-                    .orElseThrow(() -> new GenreNotFoundException(id)))
+            .map(genreId -> genreRepository.findById(genreId)
+                    .orElseThrow(() -> new GenreNotFoundException(genreId)))
             .collect(Collectors.toSet());
 
         Set<ActorEntity> actors = dto.actorIds().stream()
