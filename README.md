@@ -181,3 +181,13 @@ The API returns appropriate HTTP status codes:
 - `201 Created` - Movie created successfully
 - `200 OK` - Successful GET or PUT request
 - `204 No Content` - Movie deleted successfully
+
+## Tests and Coverage
+
+Unit tests:
+
+![Unit tests success](docs/unit-tests-success.png)
+
+Coverage report:
+
+![Coverage report](docs/coverage-report.png)
